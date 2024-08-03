@@ -147,7 +147,7 @@ const target = path.join(__dirname, 'generated-icons.css')
       const item = sources.json[i]
 
       // Load icon set
-      const filename = typeof item === 'string' ? item : item.filename
+      const filename = typeof item === 'string' ? item : await importJsonFile((item as any).prefix)
       const content = JSON.parse(await fs.readFile(filename, 'utf8')) as IconifyJSON
 
       // Filter icons
