@@ -9,6 +9,14 @@ import { getIcons, getIconsCSS, stringToIcon } from '@iconify/utils'
 /**
 //  * Script configuration
  */
+
+const importJsonFile = async (prefix: string) => {
+  const { default: jsonFile } = await import(`@iconify/json/json/${prefix}.json`, {
+    assert: { type: 'json' }
+  })
+  return jsonFile
+}
+
 interface BundleScriptCustomSVGConfig {
   // eslint-disable-next-line lines-around-comment
   // Path to SVG files
@@ -47,7 +55,7 @@ interface BundleScriptConfig {
 const sources: BundleScriptConfig = {
   json: [
     // Iconify JSON file (@iconify/json is a package name, /json/ is directory where files are, then filename)
-    require.resolve('@iconify/json/json/ri.json')
+    await importJsonFile('ri')
 
     // Custom file with only few icons
     /* {
@@ -114,7 +122,7 @@ const target = join(__dirname, 'generated-icons.css')
     const organizedList = organizeIconsList(sources.icons)
 
     for (const prefix in organizedList) {
-      const filename = require.resolve(`@iconify/json/json/${prefix}.json`)
+      const filename = await importJsonFile(prefix)
 
       sourcesJSON.push({
         filename,
