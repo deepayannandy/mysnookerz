@@ -1,5 +1,5 @@
 import { promises as fs } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
 
 // Installation: npm install --save-dev @iconify/tools @iconify/utils @iconify/json @iconify/iconify
 import { cleanupSVG, importDirectory, isEmptyColor, parseColors, runSVGO } from '@iconify/tools'
@@ -100,7 +100,7 @@ const sources: BundleScriptConfig = {
 }
 
 // File to save bundle to
-const target = join(__dirname, 'generated-icons.css')
+const target = path.join(__dirname, 'generated-icons.css')
 
 /**
  * Do stuff!
