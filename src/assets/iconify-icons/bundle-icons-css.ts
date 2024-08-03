@@ -5,6 +5,14 @@ import { dirname, join } from 'node:path'
 import { cleanupSVG, importDirectory, isEmptyColor, parseColors, runSVGO } from '@iconify/tools'
 import type { IconifyJSON } from '@iconify/types'
 import { getIcons, getIconsCSS, stringToIcon } from '@iconify/utils'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Convert the module URL to a file path
+const __filename = fileURLToPath(import.meta.url)
+
+// Get the directory name from the file path
+const __dirname = path.dirname(__filename)
 
 /**
 //  * Script configuration
