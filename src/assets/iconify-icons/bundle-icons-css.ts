@@ -12,6 +12,7 @@
  */
 import { promises as fs } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // Installation: npm install --save-dev @iconify/tools @iconify/utils @iconify/json @iconify/iconify
 import { cleanupSVG, importDirectory, isEmptyColor, parseColors, runSVGO } from '@iconify/tools'
@@ -21,6 +22,10 @@ import { getIcons, getIconsCSS, stringToIcon } from '@iconify/utils'
 /**
  * Script configuration
  */
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 interface BundleScriptCustomSVGConfig {
   // eslint-disable-next-line lines-around-comment
   // Path to SVG files
@@ -59,11 +64,11 @@ interface BundleScriptConfig {
 const sources: BundleScriptConfig = {
   json: [
     // Iconify JSON file (@iconify/json is a package name, /json/ is directory where files are, then filename)
-    '@iconify/json/json/ri.json'
+    import.meta.resolve('@iconify/json/json/ri.json')
 
     // Custom file with only few icons
     /* {
-      filename: '@iconify/json/json/line-md.json',
+      filename: require.resolve('@iconify/json/json/line-md.json'),
       icons: ['home-twotone-alt', 'github', 'document-list', 'document-code', 'image-twotone']
     } */
 
@@ -126,7 +131,7 @@ const target = join(__dirname, 'generated-icons.css')
     const organizedList = organizeIconsList(sources.icons)
 
     for (const prefix in organizedList) {
-      const filename = `@iconify/json/json/${prefix}.json`
+      const filename = import.meta.resolve(`@iconify/json/json/${prefix}.json`)
 
       sourcesJSON.push({
         filename,

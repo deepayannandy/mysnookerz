@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -139,7 +139,7 @@ const ClientListTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  const getClientData = async () => {
+  const getClientData = useCallback(async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -154,11 +154,11 @@ const ClientListTable = () => {
       }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  }
+  }, [locale])
 
   useEffect(() => {
     getClientData()
-  }, [])
+  }, [getClientData])
 
   const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
     () => [

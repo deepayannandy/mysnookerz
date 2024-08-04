@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -156,7 +156,7 @@ const DeviceListTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  const getDeviceData = async () => {
+  const getDeviceData = useCallback(async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -171,11 +171,11 @@ const DeviceListTable = () => {
       }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  }
+  }, [locale])
 
   useEffect(() => {
     getDeviceData()
-  }, [])
+  }, [getDeviceData])
 
   const handleDeviceStatus = async (id: number, isActive: boolean) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL

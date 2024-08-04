@@ -1,8 +1,7 @@
 'use client'
 
 // React Imports
-import type { MouseEvent } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { MouseEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 // Next Imports
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -90,7 +89,7 @@ const UserDropdown = () => {
     }
   }
 
-  const getUserDetails = async () => {
+  const getUserDetails = useCallback(async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -105,11 +104,11 @@ const UserDropdown = () => {
       }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  }
+  }, [locale])
 
   useEffect(() => {
     getUserDetails()
-  }, [])
+  }, [getUserDetails])
 
   return (
     <>
