@@ -11,7 +11,6 @@ import LayoutWrapper from '@layouts/LayoutWrapper'
 import VerticalLayout from '@layouts/VerticalLayout'
 
 // Component Imports
-import AuthGuard from '@/hocs/AuthGuard'
 import Header from '@components/layout/horizontal/Header'
 import Navbar from '@components/layout/vertical/Navbar'
 import Navigation from '@components/layout/vertical/Navigation'
@@ -34,37 +33,32 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
 
   return (
     <Providers direction={direction}>
-      <AuthGuard locale={params.lang}>
-        <LayoutWrapper
-          systemMode={systemMode}
-          verticalLayout={
-            <VerticalLayout
-              navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
-              navbar={<Navbar />}
-            >
-              {children}
-            </VerticalLayout>
-
-            // <VerticalLayout
-            //   navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
-            //   navbar={<Navbar />}
-            //   footer={<VerticalFooter />}
-            // >
-            //   {children}
-            // </VerticalLayout>
-          }
-          horizontalLayout={<HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>}
-        />
-        <ScrollToTop className='mui-fixed'>
-          <Button
-            variant='contained'
-            className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'
+      <LayoutWrapper
+        systemMode={systemMode}
+        verticalLayout={
+          <VerticalLayout
+            navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
+            navbar={<Navbar />}
           >
-            <i className='ri-arrow-up-line' />
-          </Button>
-        </ScrollToTop>
-        {/* <Customizer dir={direction} /> */}
-      </AuthGuard>
+            {children}
+          </VerticalLayout>
+
+          // <VerticalLayout
+          //   navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
+          //   navbar={<Navbar />}
+          //   footer={<VerticalFooter />}
+          // >
+          //   {children}
+          // </VerticalLayout>
+        }
+        horizontalLayout={<HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>}
+      />
+      <ScrollToTop className='mui-fixed'>
+        <Button variant='contained' className='is-10 bs-10 rounded-full p-0 min-is-0 flex items-center justify-center'>
+          <i className='ri-arrow-up-line' />
+        </Button>
+      </ScrollToTop>
+      {/* <Customizer dir={direction} /> */}
     </Providers>
   )
 }
