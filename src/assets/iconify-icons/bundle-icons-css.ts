@@ -18,6 +18,9 @@ import { fileURLToPath } from 'node:url'
 import { cleanupSVG, importDirectory, isEmptyColor, parseColors, runSVGO } from '@iconify/tools'
 import type { IconifyJSON } from '@iconify/types'
 import { getIcons, getIconsCSS, stringToIcon } from '@iconify/utils'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
 
 /**
  * Script configuration
@@ -64,7 +67,7 @@ interface BundleScriptConfig {
 const sources: BundleScriptConfig = {
   json: [
     // Iconify JSON file (@iconify/json is a package name, /json/ is directory where files are, then filename)
-    import.meta.resolve('@iconify/json/json/ri.json')
+    require.resolve('@iconify/json/json/ri.json')
 
     // Custom file with only few icons
     /* {
@@ -131,7 +134,7 @@ const target = join(__dirname, 'generated-icons.css')
     const organizedList = organizeIconsList(sources.icons)
 
     for (const prefix in organizedList) {
-      const filename = import.meta.resolve(`@iconify/json/json/${prefix}.json`)
+      const filename = require.resolve(`@iconify/json/json/${prefix}.json`)
 
       sourcesJSON.push({
         filename,
