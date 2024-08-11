@@ -143,7 +143,7 @@ const ClientListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/client/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/customer/`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
