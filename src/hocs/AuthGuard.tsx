@@ -1,5 +1,6 @@
 'use client'
 
+import AuthRedirect from '@/components/AuthRedirect'
 // Third-party Imports
 
 // Type Imports
@@ -8,6 +9,8 @@ import type { ChildrenType } from '@core/types'
 
 // Component Imports
 
-export default function AuthGuard({ children }: ChildrenType & { locale?: Locale }) {
-  return <>{children}</>
+export default function AuthGuard({ children, locale }: ChildrenType & { locale: Locale }) {
+  const token = localStorage.getItem('token')
+
+  return <>{token ? children : <AuthRedirect lang={locale} />}</>
 }

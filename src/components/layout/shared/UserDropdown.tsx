@@ -93,16 +93,15 @@ const UserDropdown = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/user/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/user/whoAmI`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        setUserDetails(response.data[0])
+        setUserDetails(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 400) {
-        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        return router.replace(redirectUrl)
-      }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+      localStorage.removeItem('token')
+      const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      return router.replace(redirectUrl)
     }
   }, [locale])
 

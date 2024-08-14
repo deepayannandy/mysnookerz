@@ -22,6 +22,9 @@ export type Customer = {
   contact?: string
   storeName: string
   isActive: boolean
+  fullName: string
+  credit: number
+  isBlackListed: boolean
 }
 
 export type Client = {
@@ -47,6 +50,10 @@ export type Client = {
   avatar: string
   contact?: string
   fullName: string
+  onboarding: string
+  _id: string
+  address: string
+  validTill: string
 }
 
 export type Device = {

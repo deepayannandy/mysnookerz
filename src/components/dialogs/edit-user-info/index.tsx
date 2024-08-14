@@ -9,36 +9,22 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import _ from 'lodash'
 import { toast } from 'react-toastify'
 
 type EditUserInfoData = {
-  subscription?: string
-  clientName?: string
-  storeName?: string
-  email?: string
-  address?: string
-  pincode?: string
-  city?: string
-  state?: string
-  firstName?: string
-  lastName?: string
-  userName?: string
-  billingEmail?: string
-  status?: string
-  taxId?: string
-  contact?: string
-  language?: string[]
-  country?: string
-  useAsBillingAddress?: boolean
+  storeName: string
+  email: string
+  contact: string
+  address: string
+  pincode: string
+  city: string
+  state: string
+  validDays: number | null
 }
 
 type EditUserInfoProps = {
@@ -52,48 +38,49 @@ type EditUserInfoProps = {
 
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
 
-const countries = ['India']
+// const countries = ['India']
 
-const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
+// const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
 
 const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps) => {
   // States
-  const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
-
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
+  // const [userData, setUserData] = useState<EditUserInfoProps['data']>({
+  //   ...data,
+  //   //subscription: subscriptions[0]
+  // })
+  const [userData, setUserData] = useState({} as EditUserInfoData)
 
   const handleClose = () => {
     setOpen(false)
-    setUserData(data)
+    setUserData({} as EditUserInfoData)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    const data = new FormData(event.currentTarget)
+    const address = [userData.address, userData.city, userData.state, userData.pincode].join(', ')
+    const valid_days = userData.validDays
+    const data = _.omit(userData, 'address', 'city', 'state', 'pincode', 'validDays')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     try {
-      const response = await axios.post(`${apiBaseUrl}/user/register`, data)
+      const response = await axios.post(`${apiBaseUrl}/store`, { ...data, address, valid_days })
 
       if (response && response.data) {
         getClientData()
         setOpen(false)
       }
     } catch (error: any) {
-      if (error?.response?.status === 400) {
-        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        return router.replace(redirectUrl)
-      }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>New Registration</div>
+        <div className='max-sm:is-[80%] max-sm:text-center'>New Client Registration</div>
         {/* <Typography component='span' className='flex flex-col text-center'>
           Updating user details will receive a privacy audit.
         </Typography> */}
@@ -104,7 +91,7 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
             <i className='ri-close-line text-textSecondary' />
           </IconButton>
           <Grid container spacing={5}>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Country</InputLabel>
                 <Select
@@ -119,8 +106,8 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Grid> */}
+            {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Subscription</InputLabel>
                 <Select
@@ -135,8 +122,8 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Grid> */}
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Client Name'
@@ -144,12 +131,12 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
                 value={userData?.clientName}
                 onChange={e => setUserData({ ...userData, clientName: e.target.value })}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Store Name'
-                placeholder='DelightAd'
+                placeholder='Enter Store Name'
                 value={userData?.storeName}
                 onChange={e => setUserData({ ...userData, storeName: e.target.value })}
               />
@@ -158,7 +145,7 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
               <TextField
                 fullWidth
                 label='Email'
-                placeholder='JohnDoe'
+                placeholder='Enter email'
                 value={userData?.email}
                 onChange={e => setUserData({ ...userData, email: e.target.value })}
               />
@@ -167,16 +154,28 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
               <TextField
                 fullWidth
                 label='Contact'
-                placeholder='johnDoe@email.com'
+                placeholder='Enter contact number'
                 value={userData?.contact}
                 onChange={e => setUserData({ ...userData, contact: e.target.value })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label='Valid Days'
+                inputProps={{ type: 'number', min: 0 }}
+                value={userData?.validDays}
+                defaultValue={30}
+                onChange={e =>
+                  setUserData({ ...userData, validDays: Number(e.target.value) ? Number(e.target.value) : null })
+                }
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label='Address'
-                placeholder='johnDoe@email.com'
+                placeholder='Enter Address'
                 value={userData?.address}
                 onChange={e => setUserData({ ...userData, address: e.target.value })}
               />

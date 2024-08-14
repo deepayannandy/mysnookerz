@@ -151,7 +151,7 @@ const CustomerListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/customer/`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -160,7 +160,7 @@ const CustomerListTable = () => {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }, [locale])
 
@@ -170,17 +170,17 @@ const CustomerListTable = () => {
 
   const columns = useMemo<ColumnDef<CustomerTypeWithAction, any>[]>(
     () => [
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
-      columnHelper.accessor('onboarding', {
-        header: 'Registration Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
-      }),
-      columnHelper.accessor('storeName', {
+      // columnHelper.accessor('transactionId', {
+      //   header: 'Transaction Id',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      // }),
+      // columnHelper.accessor('onboarding', {
+      //   header: 'Registration Date',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
+      // }),
+      columnHelper.accessor('fullName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
       }),
       columnHelper.accessor('email', {
         header: 'Email',
@@ -190,22 +190,22 @@ const CustomerListTable = () => {
         header: 'Contact',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
       }),
-      columnHelper.accessor('address', {
-        header: 'Address',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
-      }),
-      columnHelper.accessor('coins', {
+      // columnHelper.accessor('address', {
+      //   header: 'Address',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
+      // }),
+      columnHelper.accessor('credit', {
         header: 'Coins',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.coins}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.credit}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
+              label={customerStatusObj[row.original.isBlackListed ? 'Inactive' : 'Active'].title}
               variant='tonal'
-              color={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
+              color={customerStatusObj[row.original.isBlackListed ? 'Inactive' : 'Active'].color}
               size='small'
             />
           </div>

@@ -41,7 +41,9 @@ import OptionMenu from '@/@core/components/option-menu/index'
 import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import tableStyles from '@core/styles/table.module.css'
+import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
 declare module '@tanstack/table-core' {
@@ -76,7 +78,7 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-type ECommerceOrderTypeWithAction = Client & {
+type ClientTypeWithAction = Client & {
   action?: string
 }
 
@@ -123,16 +125,18 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // }
 
 // Column Definitions
-const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
+const columnHelper = createColumnHelper<ClientTypeWithAction>()
 
 const ClientListTable = () => {
   // States
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as Client[])
+  const [clientId, setClientId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -143,7 +147,7 @@ const ClientListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/customer/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -152,7 +156,7 @@ const ClientListTable = () => {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }, [locale])
 
@@ -160,7 +164,29 @@ const ClientListTable = () => {
     getClientData()
   }, [getClientData])
 
-  const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
+  const deleteClient = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/store/${clientId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const openDeleteConfirmation = (clientId: string) => {
+    setClientId(clientId)
+    setDeleteConfirmationDialogOpen(true)
+  }
+
+  const columns = useMemo<ColumnDef<ClientTypeWithAction, any>[]>(
     () => [
       // {
       //   id: 'select',
@@ -184,42 +210,55 @@ const ClientListTable = () => {
       //     />
       //   )
       // },
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
-      columnHelper.accessor('registrationDate', {
+      // columnHelper.accessor('transactionId', {
+      //   header: 'Transaction Id',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      // }),
+      columnHelper.accessor('onboarding', {
         header: 'Registration Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.registrationDate}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.onboarding ? DateTime.fromISO(row.original.onboarding).toFormat('dd LLL yyyy') : ''}
+          </Typography>
+        )
       }),
-      columnHelper.accessor('storeId', {
+      columnHelper.accessor('_id', {
         header: 'Store Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeId}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
       }),
-      columnHelper.accessor('fullName', {
+      columnHelper.accessor('storeName', {
         header: 'Store Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
-      }),
-      columnHelper.accessor('city', {
-        header: 'City',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.city}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
       }),
       columnHelper.accessor('contact', {
         header: 'Contact',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
       }),
-      columnHelper.accessor('subscription', {
-        header: 'Subscription',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.subscription}</Typography>
+      columnHelper.accessor('email', {
+        header: 'Email',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
       }),
-      columnHelper.accessor('plan', {
-        header: 'Plan',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.plan}</Typography>
+      // columnHelper.accessor('subscription', {
+      //   header: 'Subscription',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.subscription}</Typography>
+      // }),
+      // columnHelper.accessor('plan', {
+      //   header: 'Plan',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.plan}</Typography>
+      // }),
+      columnHelper.accessor('address', {
+        header: 'Address',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
       }),
-      columnHelper.accessor('expiringOn', {
+      columnHelper.accessor('validTill', {
         header: 'Expiring On',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.expiringOn}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.validTill ? DateTime.fromISO(row.original.validTill).toFormat('dd LLL yyyy') : ''}
+          </Typography>
+        )
       }),
+
       // columnHelper.accessor('status', {
       //   header: 'Status',
       //   cell: ({ row }) => (
@@ -250,7 +289,7 @@ const ClientListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product.id !== row.original.id))
+                    onClick: () => openDeleteConfirmation(row.original._id)
                   }
                 }
 
@@ -373,7 +412,7 @@ const ClientListTable = () => {
               startIcon={<i className='ri-add-line' />}
               onClick={() => setNewRegistrationDialogOpen(!newRegistrationDialogOpen)}
             >
-              New Registration
+              Add Client
             </Button>
             <Button
               variant='contained'
@@ -461,6 +500,12 @@ const ClientListTable = () => {
         getClientData={getClientData}
       />
       <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name='client'
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteClient}
+      />
       {/* <AddCustomerDrawer
         open={customerUserOpen}
         handleClose={() => setCustomerUserOpen(!customerUserOpen)}
