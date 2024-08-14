@@ -40,7 +40,9 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
+import CustomAvatar from '@/@core/components/mui/Avatar'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
@@ -196,6 +198,20 @@ const CustomerListTable = () => {
     setDeleteConfirmationDialogOpen(true)
   }
 
+  const getAvatar = (params: Pick<Customer, 'profileImage' | 'fullName'>) => {
+    const { profileImage, fullName } = params
+
+    if (profileImage && profileImage !== '-') {
+      return <CustomAvatar src={profileImage} skin='light' size={34} />
+    } else {
+      return (
+        <CustomAvatar skin='light' size={34}>
+          {getInitials(fullName as string)}
+        </CustomAvatar>
+      )
+    }
+  }
+
   const columns = useMemo<ColumnDef<CustomerTypeWithAction, any>[]>(
     () => [
       // columnHelper.accessor('transactionId', {
@@ -208,11 +224,17 @@ const CustomerListTable = () => {
       // }),
       columnHelper.accessor('fullName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
-      }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            {getAvatar({ profileImage: row.original.profileImage, fullName: row.original.fullName })}
+            <div className='flex flex-col'>
+              <Typography className='font-medium' color='text.primary'>
+                {row.original.fullName}
+              </Typography>
+              <Typography variant='body2'>{row.original.email}</Typography>
+            </div>
+          </div>
+        )
       }),
       columnHelper.accessor('contact', {
         header: 'Contact',

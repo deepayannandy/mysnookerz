@@ -1,5 +1,6 @@
 export type Customer = {
   transactionId: string
+  profileImage?: string
   onboarding: string
   customerName: string
   email: string
