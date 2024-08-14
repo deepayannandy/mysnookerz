@@ -42,7 +42,7 @@ type EditUserInfoProps = {
 
 // const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
 
-const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps) => {
+const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
   // States
   // const [userData, setUserData] = useState<EditUserInfoProps['data']>({
   //   ...data,

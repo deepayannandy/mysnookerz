@@ -3860,29 +3860,5 @@ export const db: ECommerceType = {
       methodNumber: 3949
     }
   ],
-  clientData: [
-    {
-      fullName: 'Deepayan',
-      transactionId: '2343432',
-      registrationDate: '20th April 2024',
-      storeId: 'S12342',
-      storeName: 'Delight',
-      city: 'Mumbai',
-      country: 'India',
-      subscription: 'ABC',
-      plan: 'Annual',
-      expiringOn: '20th Dec 2024',
-      status: 'Active',
-      contact: '8737437277',
-      id: 1,
-      customer: 'Stanfield Baser',
-      customerId: '879861',
-      email: 'sbaser0@boston.com',
-      countryFlag: '/images/cards/india.png',
-      countryCode: 'lk',
-      order: 157,
-      totalSpent: 2074.22,
-      avatar: '/images/avatars/1.png'
-    }
-  ]
+  clientData: []
 }

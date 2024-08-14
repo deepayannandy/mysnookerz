@@ -125,7 +125,7 @@ export type OrderType = {
 export type ECommerceType = {
   products: ProductType[]
   orderData: OrderType[]
-  clientData: Client[]
+  clientData: Partial<Client>[]
   customerData?: Customer[]
   reviews: ReviewType[]
   referrals: ReferralsType[]

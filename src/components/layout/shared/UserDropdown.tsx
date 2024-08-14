@@ -103,7 +103,7 @@ const UserDropdown = () => {
       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       return router.replace(redirectUrl)
     }
-  }, [locale])
+  }, [locale, pathname, router])
 
   useEffect(() => {
     getUserDetails()

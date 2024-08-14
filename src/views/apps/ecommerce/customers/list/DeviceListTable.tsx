@@ -171,7 +171,7 @@ const DeviceListTable = () => {
       }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
-  }, [locale])
+  }, [locale, pathname, router])
 
   useEffect(() => {
     getDeviceData()
