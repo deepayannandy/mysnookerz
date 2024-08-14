@@ -40,6 +40,7 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import tableStyles from '@core/styles/table.module.css'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
@@ -141,6 +142,8 @@ const CustomerListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as CustomerTypeWithAction[])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [customerId, setCustomerId] = useState('')
 
   // Hooks
   const { lang: locale } = useParams()
@@ -167,6 +170,31 @@ const CustomerListTable = () => {
   useEffect(() => {
     getCustomerData()
   }, [getCustomerData])
+
+  const deleteCustomer = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/customer/${customerId}`, {
+        headers: { 'auth-token': token }
+      })
+      if (response && response.data) {
+        getCustomerData()
+        setDeleteConfirmationDialogOpen(false)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const openDeleteConfirmation = (customerId: string) => {
+    setCustomerId(customerId)
+    setDeleteConfirmationDialogOpen(true)
+  }
 
   const columns = useMemo<ColumnDef<CustomerTypeWithAction, any>[]>(
     () => [
@@ -228,7 +256,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product._id !== row.original._id))
+                    onClick: () => openDeleteConfirmation(row.original._id)
                   }
                 }
 
@@ -413,6 +441,12 @@ const CustomerListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name='customer'
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteCustomer}
+      />
     </>
   )
 }
