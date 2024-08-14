@@ -48,7 +48,7 @@ const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
   //   ...data,
   //   //subscription: subscriptions[0]
   // })
-  const [userData, setUserData] = useState({} as EditUserInfoData)
+  const [userData, setUserData] = useState({ validDays: 30 } as EditUserInfoData)
 
   const handleClose = () => {
     setOpen(false)
@@ -66,6 +66,7 @@ const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
 
       if (response && response.data) {
         getClientData()
+        setUserData({ validDays: 30 } as EditUserInfoData)
         setOpen(false)
       }
     } catch (error: any) {
@@ -165,7 +166,6 @@ const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
                 label='Valid Days'
                 inputProps={{ type: 'number', min: 0 }}
                 value={userData?.validDays}
-                defaultValue={30}
                 onChange={e =>
                   setUserData({ ...userData, validDays: Number(e.target.value) ? Number(e.target.value) : null })
                 }
