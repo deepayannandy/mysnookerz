@@ -41,7 +41,6 @@ import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
-import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
@@ -146,11 +145,11 @@ const ClientListTable = () => {
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as Client[])
-  const [clientId, setClientId] = useState('')
+  //const [clientId, setClientId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
-  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  //const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -178,27 +177,27 @@ const ClientListTable = () => {
     getClientData()
   }, [getClientData])
 
-  const deleteClient = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    try {
-      const response = await axios.delete(`${apiBaseUrl}/store/${clientId}`, { headers: { 'auth-token': token } })
-      if (response && response.data) {
-        setData(response.data)
-      }
-    } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
-      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    }
-  }
+  // const deleteClient = async () => {
+  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+  //   const token = localStorage.getItem('token')
+  //   try {
+  //     const response = await axios.delete(`${apiBaseUrl}/store/${clientId}`, { headers: { 'auth-token': token } })
+  //     if (response && response.data) {
+  //       setData(response.data)
+  //     }
+  //   } catch (error: any) {
+  //     // if (error?.response?.status === 400) {
+  //     //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+  //     //   return router.replace(redirectUrl)
+  //     // }
+  //     toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+  //   }
+  // }
 
-  const openDeleteConfirmation = (clientId: string) => {
-    setClientId(clientId)
-    setDeleteConfirmationDialogOpen(true)
-  }
+  // const openDeleteConfirmation = (clientId: string) => {
+  //   setClientId(clientId)
+  //   setDeleteConfirmationDialogOpen(true)
+  // }
 
   const getAvatar = (params: Pick<Client, 'profileImage' | 'fullName'>) => {
     const { profileImage, fullName } = params
@@ -545,12 +544,12 @@ const ClientListTable = () => {
         getClientData={getClientData}
       />
       <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
-      <DeleteConfirmation
+      {/* <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
         name='client'
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteClient}
-      />
+      /> */}
       {/* <AddCustomerDrawer
         open={customerUserOpen}
         handleClose={() => setCustomerUserOpen(!customerUserOpen)}
