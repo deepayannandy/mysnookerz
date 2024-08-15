@@ -28,7 +28,7 @@ export type Customer = {
   isBlackListed: boolean
 }
 
-export type Client = {
+export type StoreType = {
   transactionId: string
   registrationDate: string
   storeId: string
@@ -126,8 +126,18 @@ export type OrderType = {
 export type ECommerceType = {
   products: ProductType[]
   orderData: OrderType[]
-  clientData: Partial<Client>[]
+  clientData: Partial<StoreType>[]
   customerData?: Customer[]
   reviews: ReviewType[]
   referrals: ReferralsType[]
+}
+
+export type Client = {
+  _id: string
+  fullName: string
+  mobile: number
+  email: string
+  userStatus: boolean
+  onBoardingDate: string
+  profileImage: string
 }

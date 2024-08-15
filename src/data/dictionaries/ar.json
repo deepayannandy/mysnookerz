@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "store": "المتجر",
     "client": "عميل",
     "customer": "عميل",
     "device": "جهاز",

@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "store": "Store",
     "client": "Client",
     "customer": "Customer",
     "device": "Device",

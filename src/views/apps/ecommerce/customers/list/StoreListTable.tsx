@@ -33,18 +33,16 @@ import classnames from 'classnames'
 import { toast } from 'react-toastify'
 
 // Type Imports
-import type { Client } from '@/types/apps/ecommerceTypes'
+import type { StoreType } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
 // Style Imports
+import OptionMenu from '@/@core/components/option-menu/index'
 import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
-import CustomAvatar from '@/@core/components/mui/Avatar'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
-import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
-import Chip from '@mui/material/Chip'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
@@ -66,13 +64,6 @@ type StatusChipColorType = {
   color: ThemeColor
 }
 
-type ClientStatusType = {
-  [key: string]: {
-    title: string
-    color: ThemeColor
-  }
-}
-
 export const paymentStatus: { [key: number]: PayementStatusType } = {
   1: { text: 'Paid', color: 'success' },
   2: { text: 'Pending', color: 'warning' },
@@ -87,13 +78,8 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-const clientStatusObj: ClientStatusType = {
-  Active: { title: 'Active', color: 'success' },
-  Inactive: { title: 'Inactive', color: 'error' }
-}
-
-type ClientTypeWithAction = Client & {
-  actions?: string
+type StoreTypeWithAction = StoreType & {
+  action?: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -139,13 +125,13 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // }
 
 // Column Definitions
-const columnHelper = createColumnHelper<ClientTypeWithAction>()
+const columnHelper = createColumnHelper<StoreTypeWithAction>()
 
-const ClientListTable = () => {
+const StoreListTable = () => {
   // States
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState([] as Client[])
+  const [data, setData] = useState([] as StoreType[])
   const [clientId, setClientId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
@@ -161,7 +147,7 @@ const ClientListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/user/getAllAdmins`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -200,21 +186,7 @@ const ClientListTable = () => {
     setDeleteConfirmationDialogOpen(true)
   }
 
-  const getAvatar = (params: Pick<Client, 'profileImage' | 'fullName'>) => {
-    const { profileImage, fullName } = params
-
-    if (profileImage && profileImage !== '-') {
-      return <CustomAvatar src={profileImage} skin='light' size={34} />
-    } else {
-      return (
-        <CustomAvatar skin='light' size={34}>
-          {getInitials(fullName as string)}
-        </CustomAvatar>
-      )
-    }
-  }
-
-  const columns = useMemo<ColumnDef<ClientTypeWithAction, any>[]>(
+  const columns = useMemo<ColumnDef<StoreTypeWithAction, any>[]>(
     () => [
       // {
       //   id: 'select',
@@ -242,45 +214,30 @@ const ClientListTable = () => {
       //   header: 'Transaction Id',
       //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
       // }),
-      columnHelper.accessor('fullName', {
-        header: 'Name',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-4'>
-            {getAvatar({ profileImage: row.original.profileImage, fullName: row.original.fullName })}
-            <div className='flex flex-col'>
-              <Typography className='font-medium' color='text.primary'>
-                {row.original.fullName}
-              </Typography>
-              <Typography variant='body2'>{row.original.email}</Typography>
-            </div>
-          </div>
-        )
-      }),
-      columnHelper.accessor('mobile', {
-        header: 'Contact',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.mobile}</Typography>
-      }),
-      columnHelper.accessor('onBoardingDate', {
+      columnHelper.accessor('onboarding', {
         header: 'Registration Date',
         cell: ({ row }) => (
           <Typography color='text.primary'>
-            {row.original.onBoardingDate ? DateTime.fromISO(row.original.onBoardingDate).toFormat('dd LLL yyyy') : ''}
+            {row.original.onboarding ? DateTime.fromISO(row.original.onboarding).toFormat('dd LLL yyyy') : ''}
           </Typography>
         )
       }),
-      columnHelper.accessor('userStatus', {
-        header: 'Status',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              label={clientStatusObj[row.original.userStatus ? 'Active' : 'Inactive'].title}
-              variant='tonal'
-              color={clientStatusObj[row.original.userStatus ? 'Active' : 'Inactive'].color}
-              size='small'
-            />
-          </div>
-        )
-      })
+      columnHelper.accessor('_id', {
+        header: 'Store Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
+      }),
+      columnHelper.accessor('storeName', {
+        header: 'Store Name',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
+      }),
+      columnHelper.accessor('contact', {
+        header: 'Contact',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
+      }),
+      columnHelper.accessor('email', {
+        header: 'Email',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
+      }),
       // columnHelper.accessor('subscription', {
       //   header: 'Subscription',
       //   cell: ({ row }) => <Typography color='text.primary'>{row.original.subscription}</Typography>
@@ -289,18 +246,18 @@ const ClientListTable = () => {
       //   header: 'Plan',
       //   cell: ({ row }) => <Typography color='text.primary'>{row.original.plan}</Typography>
       // }),
-      // columnHelper.accessor('address', {
-      //   header: 'Address',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
-      // }),
-      // columnHelper.accessor('validTill', {
-      //   header: 'Expiring On',
-      //   cell: ({ row }) => (
-      //     <Typography color='text.primary'>
-      //       {row.original.validTill ? DateTime.fromISO(row.original.validTill).toFormat('dd LLL yyyy') : ''}
-      //     </Typography>
-      //   )
-      // }),
+      columnHelper.accessor('address', {
+        header: 'Address',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
+      }),
+      columnHelper.accessor('validTill', {
+        header: 'Expiring On',
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.validTill ? DateTime.fromISO(row.original.validTill).toFormat('dd LLL yyyy') : ''}
+          </Typography>
+        )
+      }),
 
       // columnHelper.accessor('status', {
       //   header: 'Status',
@@ -315,34 +272,34 @@ const ClientListTable = () => {
       //     </div>
       //   )
       // }),
-      // columnHelper.accessor('actions', {
-      //   header: 'Actions',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center'>
-      //       {/* <IconButton size='small'>
-      //         <i className='ri-edit-box-line text-[22px] text-textSecondary' />
-      //       </IconButton> */}
-      //       <OptionMenu
-      //         iconButtonProps={{ size: 'medium' }}
-      //         iconClassName='text-textSecondary text-[22px]'
-      //         options={[
-      //           // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
-      //           {
-      //             text: 'Delete',
-      //             icon: 'ri-delete-bin-7-line',
-      //             menuItemProps: {
-      //               className: 'gap-2',
-      //               onClick: () => openDeleteConfirmation(row.original._id)
-      //             }
-      //           }
+      columnHelper.accessor('actions', {
+        header: 'Actions',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+            {/* <IconButton size='small'>
+              <i className='ri-edit-box-line text-[22px] text-textSecondary' />
+            </IconButton> */}
+            <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary text-[22px]'
+              options={[
+                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                {
+                  text: 'Delete',
+                  icon: 'ri-delete-bin-7-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openDeleteConfirmation(row.original._id)
+                  }
+                }
 
-      //           // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
-      //         ]}
-      //       />
-      //     </div>
-      //   ),
-      //   enableSorting: false
-      // })
+                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+              ]}
+            />
+          </div>
+        ),
+        enableSorting: false
+      })
 
       // columnHelper.accessor('customer', {
       //   header: 'Customers',
@@ -394,7 +351,7 @@ const ClientListTable = () => {
   )
 
   const table = useReactTable({
-    data: data as Client[],
+    data: data as StoreType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -450,21 +407,20 @@ const ClientListTable = () => {
               Export
             </Button> */}
             <Button
-              disabled={true}
               variant='contained'
               color='primary'
               startIcon={<i className='ri-add-line' />}
               onClick={() => setNewRegistrationDialogOpen(!newRegistrationDialogOpen)}
             >
-              Add Client
+              Add Store
             </Button>
-            {/* <Button
+            <Button
               variant='contained'
               color='primary'
               onClick={() => setRenewSubscriptionDialogOpen(!renewSubscriptionDialogOpen)}
             >
               Renew Subscription
-            </Button> */}
+            </Button>
           </div>
         </CardContent>
         <div className='overflow-x-auto'>
@@ -538,7 +494,6 @@ const ClientListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
-
       <EditUserInfo
         open={newRegistrationDialogOpen}
         setOpen={setNewRegistrationDialogOpen}
@@ -547,7 +502,7 @@ const ClientListTable = () => {
       <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='client'
+        name='store'
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteClient}
       />
@@ -561,4 +516,4 @@ const ClientListTable = () => {
   )
 }
 
-export default ClientListTable
+export default StoreListTable

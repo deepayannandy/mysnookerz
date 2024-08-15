@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "store": "Magasin",
     "client": "Cliente",
     "customer": "Consommateur",
     "device": "Appareil",
