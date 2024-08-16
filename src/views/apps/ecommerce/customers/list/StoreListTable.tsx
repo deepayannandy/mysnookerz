@@ -38,10 +38,10 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
-import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import NewStoreInfo from '@/components/dialogs/new-store-registration/index'
 import tableStyles from '@core/styles/table.module.css'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -132,7 +132,7 @@ const StoreListTable = () => {
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as StoreType[])
-  const [clientId, setClientId] = useState('')
+  const [storeId, setStoreId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
@@ -143,7 +143,7 @@ const StoreListTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  const getClientData = useCallback(async () => {
+  const getStoreData = useCallback(async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -161,16 +161,17 @@ const StoreListTable = () => {
   }, [locale, pathname, router])
 
   useEffect(() => {
-    getClientData()
-  }, [getClientData])
+    getStoreData()
+  }, [getStoreData])
 
-  const deleteClient = async () => {
+  const deleteStore = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.delete(`${apiBaseUrl}/store/${clientId}`, { headers: { 'auth-token': token } })
+      const response = await axios.delete(`${apiBaseUrl}/store/${storeId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        setData(response.data)
+        getStoreData()
+        setDeleteConfirmationDialogOpen(false)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -181,8 +182,8 @@ const StoreListTable = () => {
     }
   }
 
-  const openDeleteConfirmation = (clientId: string) => {
-    setClientId(clientId)
+  const openDeleteConfirmation = (storeId: string) => {
+    setStoreId(storeId)
     setDeleteConfirmationDialogOpen(true)
   }
 
@@ -494,23 +495,23 @@ const StoreListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
-      <EditUserInfo
+      <NewStoreInfo
         open={newRegistrationDialogOpen}
         setOpen={setNewRegistrationDialogOpen}
-        getClientData={getClientData}
+        getStoreData={getStoreData}
       />
       <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
         name='store'
         setOpen={setDeleteConfirmationDialogOpen}
-        deleteApiCall={deleteClient}
+        deleteApiCall={deleteStore}
       />
       {/* <AddCustomerDrawer
         open={customerUserOpen}
         handleClose={() => setCustomerUserOpen(!customerUserOpen)}
         setData={setData}
-        clientData={data}
+        storeData={data}
       /> */}
     </>
   )

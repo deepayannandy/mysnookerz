@@ -16,7 +16,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import { toast } from 'react-toastify'
 
-type EditUserInfoData = {
+type NewStoreInfoData = {
   storeName: string
   email: string
   contact: string
@@ -27,11 +27,11 @@ type EditUserInfoData = {
   validDays: number | null
 }
 
-type EditUserInfoProps = {
+type NewStoreInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data?: EditUserInfoData
-  getClientData: () => void
+  data?: NewStoreInfoData
+  getStoreData: () => void
 }
 
 // const status = ['Status', 'Active', 'Inactive', 'Suspended']
@@ -42,17 +42,17 @@ type EditUserInfoProps = {
 
 // const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
 
-const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
+const NewStoreInfo = ({ open, setOpen, getStoreData }: NewStoreInfoProps) => {
   // States
-  // const [userData, setUserData] = useState<EditUserInfoProps['data']>({
+  // const [userData, setUserData] = useState<NewStoreInfoProps['data']>({
   //   ...data,
   //   //subscription: subscriptions[0]
   // })
-  const [userData, setUserData] = useState({ validDays: 30 } as EditUserInfoData)
+  const [userData, setUserData] = useState({ validDays: 30 } as NewStoreInfoData)
 
   const handleClose = () => {
     setOpen(false)
-    setUserData({} as EditUserInfoData)
+    setUserData({} as NewStoreInfoData)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -65,8 +65,8 @@ const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
       const response = await axios.post(`${apiBaseUrl}/store`, { ...data, address, valid_days })
 
       if (response && response.data) {
-        getClientData()
-        setUserData({ validDays: 30 } as EditUserInfoData)
+        getStoreData()
+        setUserData({ validDays: 30 } as NewStoreInfoData)
         setOpen(false)
       }
     } catch (error: any) {
@@ -280,4 +280,4 @@ const EditUserInfo = ({ open, setOpen, getClientData }: EditUserInfoProps) => {
   )
 }
 
-export default EditUserInfo
+export default NewStoreInfo

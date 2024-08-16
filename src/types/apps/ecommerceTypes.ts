@@ -135,9 +135,11 @@ export type ECommerceType = {
 export type Client = {
   _id: string
   fullName: string
-  mobile: number
+  mobile: string
   email: string
   userStatus: boolean
   onBoardingDate: string
   profileImage: string
+  password?: string | null
+  confirmPassword?: string
 }

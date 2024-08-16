@@ -36,14 +36,15 @@ import { toast } from 'react-toastify'
 import type { Client } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
-// Style Imports
-import EditUserInfo from '@/components/dialogs/edit-user-info/index'
-import RenewSubscription from '@/components/dialogs/renew-membership/index'
-
 import CustomAvatar from '@/@core/components/mui/Avatar'
+import OptionMenu from '@/@core/components/option-menu'
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import EditClientInfo from '@/components/dialogs/edit-client-info'
+import NewClientRegistration from '@/components/dialogs/new-client-registration'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
+import IconButton from '@mui/material/IconButton'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
@@ -145,11 +146,12 @@ const ClientListTable = () => {
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as Client[])
-  //const [clientId, setClientId] = useState('')
+  const [clientData, setClientData] = useState({} as Client)
+  const [clientId, setClientId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
-  const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
-  //const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [editClientInfoDialogOpen, setEditClientInfoDialogOpen] = useState(false)
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -177,27 +179,34 @@ const ClientListTable = () => {
     getClientData()
   }, [getClientData])
 
-  // const deleteClient = async () => {
-  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  //   const token = localStorage.getItem('token')
-  //   try {
-  //     const response = await axios.delete(`${apiBaseUrl}/store/${clientId}`, { headers: { 'auth-token': token } })
-  //     if (response && response.data) {
-  //       setData(response.data)
-  //     }
-  //   } catch (error: any) {
-  //     // if (error?.response?.status === 400) {
-  //     //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-  //     //   return router.replace(redirectUrl)
-  //     // }
-  //     toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-  //   }
-  // }
+  const deleteClient = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
 
-  // const openDeleteConfirmation = (clientId: string) => {
-  //   setClientId(clientId)
-  //   setDeleteConfirmationDialogOpen(true)
-  // }
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/user/${clientId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        getClientData()
+        setDeleteConfirmationDialogOpen(false)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const openDeleteConfirmation = (clientId: string) => {
+    setClientId(clientId)
+    setDeleteConfirmationDialogOpen(true)
+  }
+
+  const editClientData = (rowData: Client) => {
+    setClientData(rowData)
+    setEditClientInfoDialogOpen(!editClientInfoDialogOpen)
+  }
 
   const getAvatar = (params: Pick<Client, 'profileImage' | 'fullName'>) => {
     const { profileImage, fullName } = params
@@ -279,6 +288,34 @@ const ClientListTable = () => {
             />
           </div>
         )
+      }),
+      columnHelper.accessor('actions', {
+        header: 'Actions',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+            <IconButton size='small' onClick={() => editClientData(row.original)}>
+              <i className='ri-edit-box-line text-[22px] text-textSecondary' />
+            </IconButton>
+            <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary text-[22px]'
+              options={[
+                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                {
+                  text: 'Delete',
+                  icon: 'ri-delete-bin-7-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openDeleteConfirmation(row.original._id)
+                  }
+                }
+
+                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+              ]}
+            />
+          </div>
+        ),
+        enableSorting: false
       })
       // columnHelper.accessor('subscription', {
       //   header: 'Subscription',
@@ -449,7 +486,6 @@ const ClientListTable = () => {
               Export
             </Button> */}
             <Button
-              disabled={true}
               variant='contained'
               color='primary'
               startIcon={<i className='ri-add-line' />}
@@ -538,18 +574,23 @@ const ClientListTable = () => {
         />
       </Card>
 
-      <EditUserInfo
+      <NewClientRegistration
         open={newRegistrationDialogOpen}
         setOpen={setNewRegistrationDialogOpen}
         getClientData={getClientData}
       />
-      <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
-      {/* <DeleteConfirmation
+      <EditClientInfo
+        open={editClientInfoDialogOpen}
+        setOpen={setEditClientInfoDialogOpen}
+        getClientData={getClientData}
+        clientData={clientData}
+      />
+      <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
         name='client'
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteClient}
-      /> */}
+      />
       {/* <AddCustomerDrawer
         open={customerUserOpen}
         handleClose={() => setCustomerUserOpen(!customerUserOpen)}
