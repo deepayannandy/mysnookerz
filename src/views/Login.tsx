@@ -59,6 +59,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [errorState, setErrorState] = useState<ErrorType | null>(null)
   const [serverError, setSeverError] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
 
   // Vars
   const darkImg = '/images/pages/auth-v2-mask-dark.png'
@@ -81,8 +82,8 @@ const Login = ({ mode }: { mode: Mode }) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: 'deepayan.622@gmail.com',
-      password: 'test@6622'
+      email: localStorage.getItem('superAdminEmail') || '',
+      password: localStorage.getItem('superAdminPassword') || ''
     }
   })
 
@@ -109,6 +110,13 @@ const Login = ({ mode }: { mode: Mode }) => {
 
       if (response && response.data) {
         localStorage.setItem('token', response.data)
+        if (rememberMe) {
+          localStorage.setItem('superAdminEmail', data.email)
+          localStorage.setItem('superAdminPassword', data.password)
+        } else {
+          localStorage.removeItem('superAdminEmail')
+          localStorage.removeItem('superAdminPassword')
+        }
         const redirectURL = searchParams.get('redirectTo') ?? '/'
 
         router.replace(getLocalizedUrl(redirectURL, locale as Locale))
@@ -221,7 +229,16 @@ const Login = ({ mode }: { mode: Mode }) => {
               )}
             />
             <div className='flex justify-between items-center flex-wrap gap-x-3 gap-y-1'>
-              <FormControlLabel control={<Checkbox defaultChecked />} label='Remember me' />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked
+                    checked={rememberMe}
+                    onChange={event => setRememberMe(event.target.checked)}
+                  />
+                }
+                label='Remember me'
+              />
               <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
                 Forgot password?
               </Typography>

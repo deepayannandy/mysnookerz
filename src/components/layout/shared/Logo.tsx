@@ -1,8 +1,8 @@
 'use client'
 
 // React Imports
-import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
+import { useEffect, useRef } from 'react'
 
 // Third-party Imports
 import styled from '@emotion/styled'
@@ -11,14 +11,12 @@ import styled from '@emotion/styled'
 import type { VerticalNavContextProps } from '@menu/contexts/verticalNavContext'
 
 // Component Imports
-import MaterioLogo from '@core/svg/Logo'
 
 // Config Imports
-import themeConfig from '@configs/themeConfig'
 
 // Hook Imports
-import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 type LogoTextProps = {
   isHovered?: VerticalNavContextProps['isHovered']
@@ -50,7 +48,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
   const { settings } = useSettings()
 
   // Vars
-  const { layout } = settings
+  const { layout, mode } = settings
 
   useEffect(() => {
     if (layout !== 'collapsed') {
@@ -69,7 +67,13 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
 
   return (
     <div className='flex items-center min-bs-[24px]'>
-      <MaterioLogo className='text-[22px] text-primary' />
+      <img
+        className={mode === 'light' ? '' : 'invert'}
+        width={100}
+        height={40}
+        src={'/images/website-logo/emw_dark_black.png'}
+      ></img>
+      {/* <MaterioLogo className='text-[22px] text-primary' />
       <LogoText
         color={color}
         ref={logoTextRef}
@@ -78,7 +82,7 @@ const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
         transitionDuration={transitionDuration}
       >
         {themeConfig.templateName}
-      </LogoText>
+      </LogoText> */}
     </div>
   )
 }

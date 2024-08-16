@@ -83,10 +83,11 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
       >
         <MenuItem href={`/${locale}/dashboards/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
         <MenuItem href={`/${locale}/dashboards/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/client`}>{dictionary['navigation'].client}</MenuItem>
         <MenuItem href={`/${locale}/dashboards/store`}>{dictionary['navigation'].store}</MenuItem>
         <MenuItem href={`/${locale}/dashboards/customer`}>{dictionary['navigation'].customer}</MenuItem>
         <MenuItem href={`/${locale}/dashboards/device`}>{dictionary['navigation'].device}</MenuItem>
-        <MenuItem href={`/${locale}/dashboards/client`}>{dictionary['navigation'].client}</MenuItem>
+
         {/* <SubMenu
           label={dictionary['navigation'].dashboards}
           icon={<i className='ri-home-smile-line' />}

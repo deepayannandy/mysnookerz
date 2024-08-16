@@ -145,7 +145,7 @@ const CustomerListTable = () => {
   const [data, setData] = useState([] as CustomerTypeWithAction[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
-  const [customerId, setCustomerId] = useState('')
+  const [customerData, setCustomerData] = useState({} as Customer)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -174,6 +174,7 @@ const CustomerListTable = () => {
   }, [getCustomerData])
 
   const deleteCustomer = async () => {
+    const customerId = customerData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -193,8 +194,8 @@ const CustomerListTable = () => {
     }
   }
 
-  const openDeleteConfirmation = (customerId: string) => {
-    setCustomerId(customerId)
+  const openDeleteConfirmation = (customer: Customer) => {
+    setCustomerData(customer)
     setDeleteConfirmationDialogOpen(true)
   }
 
@@ -278,7 +279,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original)
                   }
                 }
 
@@ -289,51 +290,6 @@ const CustomerListTable = () => {
         ),
         enableSorting: false
       })
-
-      // columnHelper.accessor('customer', {
-      //   header: 'Customers',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center gap-3'>
-      //       {getAvatar({ avatar: row.original.avatar, customer: row.original.customer })}
-      //       <div className='flex flex-col items-start'>
-      //         <Typography
-      //           component={Link}
-      //           color='text.primary'
-      //           href={getLocalizedUrl(`/apps/ecommerce/customers/details/${row.original.customerId}`, locale as Locale)}
-      //           className='font-medium hover:text-primary'
-      //         >
-      //           {row.original.customer}
-      //         </Typography>
-      //         <Typography variant='body2'>{row.original.email}</Typography>
-      //       </div>
-      //     </div>
-      //   )
-      // }),
-      // columnHelper.accessor('customerId', {
-      //   header: 'Customer Id',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.customerId}</Typography>
-      // }),
-      // columnHelper.accessor('country', {
-      //   header: 'Country',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center gap-2'>
-      //       <img src={row.original.countryFlag} height={22} />
-      //       <Typography>{row.original.country}</Typography>
-      //     </div>
-      //   )
-      // }),
-      // columnHelper.accessor('order', {
-      //   header: 'Orders',
-      //   cell: ({ row }) => <Typography>{row.original.order}</Typography>
-      // }),
-      // columnHelper.accessor('totalSpent', {
-      //   header: 'Total Spent',
-      //   cell: ({ row }) => (
-      //     <Typography className='font-medium' color='text.primary'>
-      //       ${row.original.totalSpent.toLocaleString()}
-      //     </Typography>
-      //   )
-      // })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -465,7 +421,7 @@ const CustomerListTable = () => {
       </Card>
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='customer'
+        name={`customer (${customerData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteCustomer}
       />
