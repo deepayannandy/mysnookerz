@@ -1,17 +1,17 @@
 // MUI Imports
+import type { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
-import Button from '@mui/material/Button'
-import type { ButtonProps } from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 
 // Type Imports
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import EditUserInfo from '@components/dialogs/edit-user-info'
+import NewStoreInfo from '@/components/dialogs/new-store-registration'
 import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import CustomAvatar from '@core/components/mui/Avatar'
@@ -129,7 +129,7 @@ const UserDetails = () => {
             <OpenDialogOnElementClick
               element={Button}
               elementProps={buttonProps('Edit', 'primary', 'contained')}
-              dialog={EditUserInfo}
+              dialog={NewStoreInfo}
               dialogProps={{ data: userData }}
             />
             <OpenDialogOnElementClick

@@ -156,7 +156,7 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
               <FormControl fullWidth>
                 <InputLabel>Store Name</InputLabel>
                 <Select label='Store Name' value={storeId} onChange={e => setStoreId(e.target.value)}>
-                  {stores.map((store, index) => (
+                  {stores.map(store => (
                     <MenuItem key={store.storeName} value={store.id}>
                       {store.storeName}
                     </MenuItem>

@@ -41,7 +41,7 @@ import OptionMenu from '@/@core/components/option-menu/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
-import NewStoreInfo from '@/components/dialogs/new-store-registration/index'
+import NewStoreInfo from '@/components/dialogs/new-store-registration'
 import tableStyles from '@core/styles/table.module.css'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'

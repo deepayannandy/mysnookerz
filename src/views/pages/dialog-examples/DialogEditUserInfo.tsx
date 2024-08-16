@@ -1,12 +1,12 @@
 // MUI Imports
-import Card from '@mui/material/Card'
+import type { ButtonProps } from '@mui/material/Button'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import type { ButtonProps } from '@mui/material/Button'
 
 // Component Imports
-import EditUserInfo from '@components/dialogs/edit-user-info'
+import NewStoreInfo from '@/components/dialogs/new-store-registration'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 
 const DialogEditUserInfo = () => {
@@ -25,7 +25,7 @@ const DialogEditUserInfo = () => {
           <Typography color='text.primary'>
             Use this modal to modify the existing user&#39;s current information.
           </Typography>
-          <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={EditUserInfo} />
+          <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={NewStoreInfo} />
         </CardContent>
       </Card>
     </>

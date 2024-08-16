@@ -1,20 +1,20 @@
 // MUI Imports
+import Avatar from '@mui/material/Avatar'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Avatar from '@mui/material/Avatar'
-import Typography from '@mui/material/Typography'
 import type { TypographyProps } from '@mui/material/Typography'
+import Typography from '@mui/material/Typography'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
 import type { OrderType } from '@/types/apps/ecommerceTypes'
+import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import CustomAvatar from '@core/components/mui/Avatar'
-import EditUserInfo from '@components/dialogs/edit-user-info'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
+import NewStoreInfo from '@/components/dialogs/new-store-registration'
 import { getInitials } from '@/utils/getInitials'
 
 const getAvatar = (params: Pick<OrderType, 'avatar' | 'customer'>) => {
@@ -79,7 +79,7 @@ const CustomerDetails = ({ orderData }: { orderData?: OrderType }) => {
             <OpenDialogOnElementClick
               element={Typography}
               elementProps={typographyProps('Edit', 'primary', 'cursor-pointer font-medium')}
-              dialog={EditUserInfo}
+              dialog={NewStoreInfo}
               dialogProps={{ data: userData }}
             />
           </div>

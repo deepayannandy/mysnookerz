@@ -1,19 +1,19 @@
 // MUI Imports
+import type { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import type { ButtonProps } from '@mui/material/Button'
 
 // Type Imports
 import type { Customer } from '@/types/apps/ecommerceTypes'
 
 // Component Imports
-import CustomAvatar from '@core/components/mui/Avatar'
-import EditUserInfo from '@components/dialogs/edit-user-info'
+import NewStoreInfo from '@/components/dialogs/new-store-registration'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import CustomAvatar from '@core/components/mui/Avatar'
 
 const CustomerDetails = ({ customerData }: { customerData?: Customer }) => {
   // Vars
@@ -90,7 +90,7 @@ const CustomerDetails = ({ customerData }: { customerData?: Customer }) => {
             </div>
           </div>
         </div>
-        <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={EditUserInfo} />
+        <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={NewStoreInfo} />
       </CardContent>
     </Card>
   )
