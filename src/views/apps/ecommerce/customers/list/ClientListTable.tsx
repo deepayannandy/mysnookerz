@@ -147,7 +147,6 @@ const ClientListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as Client[])
   const [clientData, setClientData] = useState({} as Client)
-  const [clientId, setClientId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [editClientInfoDialogOpen, setEditClientInfoDialogOpen] = useState(false)
@@ -180,6 +179,7 @@ const ClientListTable = () => {
   }, [getClientData])
 
   const deleteClient = async () => {
+    const clientId = clientData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
 
@@ -198,8 +198,8 @@ const ClientListTable = () => {
     }
   }
 
-  const openDeleteConfirmation = (clientId: string) => {
-    setClientId(clientId)
+  const openDeleteConfirmation = (client: Client) => {
+    setClientData(client)
     setDeleteConfirmationDialogOpen(true)
   }
 
@@ -306,7 +306,7 @@ const ClientListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original)
                   }
                 }
 
@@ -317,113 +317,6 @@ const ClientListTable = () => {
         ),
         enableSorting: false
       })
-      // columnHelper.accessor('subscription', {
-      //   header: 'Subscription',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.subscription}</Typography>
-      // }),
-      // columnHelper.accessor('plan', {
-      //   header: 'Plan',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.plan}</Typography>
-      // }),
-      // columnHelper.accessor('address', {
-      //   header: 'Address',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
-      // }),
-      // columnHelper.accessor('validTill', {
-      //   header: 'Expiring On',
-      //   cell: ({ row }) => (
-      //     <Typography color='text.primary'>
-      //       {row.original.validTill ? DateTime.fromISO(row.original.validTill).toFormat('dd LLL yyyy') : ''}
-      //     </Typography>
-      //   )
-      // }),
-
-      // columnHelper.accessor('status', {
-      //   header: 'Status',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center gap-3'>
-      //       <Chip
-      //         label={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
-      //         variant='tonal'
-      //         color={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
-      //         size='small'
-      //       />
-      //     </div>
-      //   )
-      // }),
-      // columnHelper.accessor('actions', {
-      //   header: 'Actions',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center'>
-      //       {/* <IconButton size='small'>
-      //         <i className='ri-edit-box-line text-[22px] text-textSecondary' />
-      //       </IconButton> */}
-      //       <OptionMenu
-      //         iconButtonProps={{ size: 'medium' }}
-      //         iconClassName='text-textSecondary text-[22px]'
-      //         options={[
-      //           // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
-      //           {
-      //             text: 'Delete',
-      //             icon: 'ri-delete-bin-7-line',
-      //             menuItemProps: {
-      //               className: 'gap-2',
-      //               onClick: () => openDeleteConfirmation(row.original._id)
-      //             }
-      //           }
-
-      //           // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
-      //         ]}
-      //       />
-      //     </div>
-      //   ),
-      //   enableSorting: false
-      // })
-
-      // columnHelper.accessor('customer', {
-      //   header: 'Customers',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center gap-3'>
-      //       {getAvatar({ avatar: row.original.avatar, customer: row.original.customer })}
-      //       <div className='flex flex-col items-start'>
-      //         <Typography
-      //           component={Link}
-      //           color='text.primary'
-      //           href={getLocalizedUrl(`/apps/ecommerce/customers/details/${row.original.customerId}`, locale as Locale)}
-      //           className='font-medium hover:text-primary'
-      //         >
-      //           {row.original.customer}
-      //         </Typography>
-      //         <Typography variant='body2'>{row.original.email}</Typography>
-      //       </div>
-      //     </div>
-      //   )
-      // }),
-      // columnHelper.accessor('customerId', {
-      //   header: 'Customer Id',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.customerId}</Typography>
-      // }),
-      // columnHelper.accessor('country', {
-      //   header: 'Country',
-      //   cell: ({ row }) => (
-      //     <div className='flex items-center gap-2'>
-      //       <img src={row.original.countryFlag} height={22} />
-      //       <Typography>{row.original.country}</Typography>
-      //     </div>
-      //   )
-      // }),
-      // columnHelper.accessor('order', {
-      //   header: 'Orders',
-      //   cell: ({ row }) => <Typography>{row.original.order}</Typography>
-      // }),
-      // columnHelper.accessor('totalSpent', {
-      //   header: 'Total Spent',
-      //   cell: ({ row }) => (
-      //     <Typography className='font-medium' color='text.primary'>
-      //       ${row.original.totalSpent.toLocaleString()}
-      //     </Typography>
-      //   )
-      // })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -587,7 +480,7 @@ const ClientListTable = () => {
       />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='client'
+        name={`client (${clientData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteClient}
       />
