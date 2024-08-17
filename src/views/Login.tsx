@@ -249,7 +249,7 @@ const Login = ({ mode }: { mode: Mode }) => {
 
             {serverError ? (
               <Alert variant='filled' severity='error'>
-                serverError
+                {serverError}
               </Alert>
             ) : (
               <></>
