@@ -80,7 +80,8 @@ export const paymentStatus: { [key: number]: PayementStatusType } = {
 
 const customerStatusObj: CustomerStatusType = {
   Active: { title: 'Active', color: 'success' },
-  Inactive: { title: 'Inactive', color: 'error' }
+  Inactive: { title: 'Inactive', color: 'error' },
+  Deleted: { title: 'Deleted', color: 'error' }
 }
 
 export const statusChipColor: { [key: string]: StatusChipColorType } = {
@@ -254,9 +255,9 @@ const CustomerListTable = () => {
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={customerStatusObj[row.original.isBlackListed ? 'Inactive' : 'Active'].title}
+              label={customerStatusObj[row.original.isDeleted ? 'Deleted' : 'Active'].title}
               variant='tonal'
-              color={customerStatusObj[row.original.isBlackListed ? 'Inactive' : 'Active'].color}
+              color={customerStatusObj[row.original.isDeleted ? 'Deleted' : 'Active'].color}
               size='small'
             />
           </div>

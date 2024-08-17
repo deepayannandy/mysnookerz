@@ -26,6 +26,7 @@ export type Customer = {
   fullName: string
   credit: number
   isBlackListed: boolean
+  isDeleted: boolean
 }
 
 export type StoreType = {
