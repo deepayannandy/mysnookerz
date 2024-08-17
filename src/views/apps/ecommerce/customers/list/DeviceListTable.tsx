@@ -165,7 +165,7 @@ const DeviceListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 400) {
+      if (error?.response?.status === 401) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
