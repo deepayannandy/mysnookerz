@@ -50,7 +50,7 @@ type ErrorType = {
 type FormData = yup.InferType<typeof schema>
 
 const schema = yup.object().shape({
-  email: yup.string().email('Please enter a valid email address').required('This field is required'),
+  email: yup.string().required('This field is required'),
   password: yup.string().min(5, 'Password must be at least 5 characters long').required('This field is required')
 })
 
@@ -182,7 +182,7 @@ const Login = ({ mode }: { mode: Mode }) => {
                   fullWidth
                   autoFocus
                   type='email'
-                  label='Email'
+                  label='Email/Mobile'
                   onChange={e => {
                     field.onChange(e.target.value)
                     errorState !== null && setErrorState(null)
