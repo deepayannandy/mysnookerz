@@ -276,6 +276,14 @@ const ClientListTable = () => {
           </Typography>
         )
       }),
+      columnHelper.accessor('userDesignation', {
+        header: 'Role',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-3'>
+            <Chip label={row.original.userDesignation} variant='tonal' color='primary' size='small' />
+          </div>
+        )
+      }),
       columnHelper.accessor('userStatus', {
         header: 'Status',
         cell: ({ row }) => (

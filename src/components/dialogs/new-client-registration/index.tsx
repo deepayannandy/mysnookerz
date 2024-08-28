@@ -5,17 +5,15 @@
 // MUI Imports
 import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
+import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
 import FormControl from '@mui/material/FormControl'
-import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import axios from 'axios'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
@@ -70,15 +68,17 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
     resolver: yupResolver(schema),
     defaultValues: {
       fullName: '',
-      mobile: null,
+      mobile: '',
       email: '',
       profileImage: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     }
   })
 
   const handleClose = () => {
     resetForm()
+    setStoreId('')
     setOpen(false)
   }
 
@@ -98,6 +98,7 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
       if (response && response.data) {
         getClientData()
         resetForm()
+        setStoreId('')
         setOpen(false)
       }
     } catch (error: any) {
@@ -123,6 +124,7 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
           }
         })
         setStores(stores)
+        setStoreId(stores?.[0]?.id)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -136,136 +138,125 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
   useEffect(() => {
     getAllStore()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [open])
 
   return (
-    <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
-      <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>New Client Registration</div>
-        {/* <Typography component='span' className='flex flex-col text-center'>
-          Updating user details will receive a privacy audit.
-        </Typography> */}
-      </DialogTitle>
-      <form onSubmit={handleSubmit(data => onSubmit(data))}>
-        <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
-          <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
-            <i className='ri-close-line text-textSecondary' />
-          </IconButton>
-          <Grid container spacing={5}>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Store Name</InputLabel>
-                <Select label='Store Name' value={storeId} onChange={e => setStoreId(e.target.value)}>
-                  {stores.map(store => (
-                    <MenuItem key={store.storeName} value={store.id}>
-                      {store.storeName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='fullName'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Full Name'
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.fullName && { error: true, helperText: errors.fullName.message })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='mobile'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Mobile'
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.mobile && { error: true, helperText: errors.mobile.message })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='email'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Email'
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.email && { error: true, helperText: errors.email.message })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='password'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Password'
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.password && { error: true, helperText: errors.password.message })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='confirmPassword'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Confirm Password'
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.confirmPassword && { error: true, helperText: errors.confirmPassword?.message })}
-                  />
-                )}
-              />
-            </Grid>
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='Email'
-                placeholder='JohnDoe'
-                value={userData?.email}
-                onChange={e => setUserData({ ...userData, email: e.target.value })}
-              />
-            </Grid> */}
-          </Grid>
-        </DialogContent>
-        <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button variant='contained' type='submit'>
-            Submit
-          </Button>
-          <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <Drawer
+      open={open}
+      anchor='right'
+      variant='temporary'
+      onClose={handleClose}
+      ModalProps={{ keepMounted: true }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+    >
+      <div className='flex items-center justify-between pli-5 plb-4'>
+        <Typography variant='h5'>New Client Registration</Typography>
+        <IconButton size='small' onClick={handleClose}>
+          <i className='ri-close-line text-2xl' />
+        </IconButton>
+      </div>
+      <Divider />
+      <div className='p-5'>
+        <form onSubmit={handleSubmit(data => onSubmit(data))}>
+          <div className='flex flex-col gap-5'>
+            <FormControl fullWidth>
+              <InputLabel>Store Name</InputLabel>
+              <Select label='Store Name' value={storeId} onChange={e => setStoreId(e.target.value)}>
+                {stores.map(store => (
+                  <MenuItem key={store.storeName} value={store.id}>
+                    {store.storeName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Controller
+              name='fullName'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Full Name'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.fullName && { error: true, helperText: errors.fullName.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='mobile'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Mobile'
+                  inputProps={{ type: 'number', min: 0 }}
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.mobile && { error: true, helperText: errors.mobile.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='email'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Email'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.email && { error: true, helperText: errors.email.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='password'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Password'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.password && { error: true, helperText: errors.password.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='confirmPassword'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Confirm Password'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.confirmPassword && { error: true, helperText: errors.confirmPassword?.message })}
+                />
+              )}
+            />
+            <div className='flex items-center gap-4'>
+              <Button variant='contained' type='submit'>
+                Submit
+              </Button>
+              <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </Drawer>
   )
 }
 

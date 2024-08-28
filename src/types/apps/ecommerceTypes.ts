@@ -143,4 +143,5 @@ export type Client = {
   profileImage: string
   password?: string | null
   confirmPassword?: string
+  userDesignation: string
 }
