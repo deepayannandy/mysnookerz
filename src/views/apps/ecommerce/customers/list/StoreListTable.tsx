@@ -173,6 +173,7 @@ const StoreListTable = () => {
       if (response && response.data) {
         getStoreData()
         setDeleteConfirmationDialogOpen(false)
+        toast.success('Store deleted successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

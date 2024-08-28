@@ -105,6 +105,7 @@ const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClient
         getClientData()
         resetForm()
         setOpen(false)
+        toast.success('Client info updated successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

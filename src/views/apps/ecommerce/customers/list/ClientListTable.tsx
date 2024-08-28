@@ -188,6 +188,7 @@ const ClientListTable = () => {
       if (response && response.data) {
         getClientData()
         setDeleteConfirmationDialogOpen(false)
+        toast.success('Client deleted successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

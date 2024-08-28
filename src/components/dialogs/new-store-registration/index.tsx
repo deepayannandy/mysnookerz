@@ -75,6 +75,7 @@ const NewStoreInfo = ({ open, setOpen, getStoreData }: NewStoreInfoProps) => {
           state: ''
         } as NewStoreInfoData)
         setOpen(false)
+        toast.success('Store added successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
