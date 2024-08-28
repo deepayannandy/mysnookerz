@@ -42,6 +42,7 @@ import OptionMenu from '@/@core/components/option-menu/index'
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import SearchInput from '@/components/Search'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -343,12 +344,16 @@ const CustomerListTable = () => {
   return (
     <>
       <Card>
-        <CardContent className='flex justify-between flex-col items-start sm:flex-col sm:items-end gap-y-4'>
-          {/* <DebouncedInput
-            value={globalFilter ?? ''}
-            onChange={value => setGlobalFilter(String(value))}
-            placeholder='Search'
-          /> */}
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-2'>
+          <Typography className='text-xl font-bold'>Customers</Typography>
+          <div className='flex gap-x-4'>
+            <SearchInput
+              value={globalFilter ?? ''}
+              onChange={value => setGlobalFilter(String(value))}
+              placeholder='Search'
+              //className='is-full sm:is-auto'
+            />
+          </div>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>

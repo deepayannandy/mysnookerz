@@ -41,6 +41,7 @@ import OptionMenu from '@/@core/components/option-menu'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import EditClientInfo from '@/components/dialogs/edit-client-info'
 import NewClientRegistration from '@/components/dialogs/new-client-registration'
+import SearchInput from '@/components/Search'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
@@ -225,32 +226,6 @@ const ClientListTable = () => {
 
   const columns = useMemo<ColumnDef<ClientTypeWithAction, any>[]>(
     () => [
-      // {
-      //   id: 'select',
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: table.getIsAllRowsSelected(),
-      //         indeterminate: table.getIsSomeRowsSelected(),
-      //         onChange: table.getToggleAllRowsSelectedHandler()
-      //       }}
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: row.getIsSelected(),
-      //         disabled: !row.getCanSelect(),
-      //         indeterminate: row.getIsSomeSelected(),
-      //         onChange: row.getToggleSelectedHandler()
-      //       }}
-      //     />
-      //   )
-      // },
-      // columnHelper.accessor('transactionId', {
-      //   header: 'Transaction Id',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      // }),
       columnHelper.accessor('fullName', {
         header: 'Name',
         cell: ({ row }) => (
@@ -377,16 +352,13 @@ const ClientListTable = () => {
   return (
     <>
       <Card>
-        <CardContent className='flex justify-between flex-col items-start sm:flex-col sm:items-end gap-y-4'>
-          {/* <DebouncedInput
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-2'>
+          <SearchInput
             value={globalFilter ?? ''}
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Search'
-          /> */}
+          />
           <div className='flex gap-x-4'>
-            {/* <Button variant='outlined' color='secondary' startIcon={<i className='ri-upload-2-line' />}>
-              Export
-            </Button> */}
             <Button
               variant='contained'
               color='primary'
@@ -395,13 +367,6 @@ const ClientListTable = () => {
             >
               Add Client
             </Button>
-            {/* <Button
-              variant='contained'
-              color='primary'
-              onClick={() => setRenewSubscriptionDialogOpen(!renewSubscriptionDialogOpen)}
-            >
-              Renew Subscription
-            </Button> */}
           </div>
         </CardContent>
         <div className='overflow-x-auto'>
