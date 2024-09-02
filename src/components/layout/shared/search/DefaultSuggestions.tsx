@@ -35,93 +35,82 @@ const defaultSuggestions: DefaultSuggestionsType[] = [
         icon: 'ri-pie-chart-2-line'
       },
       {
-        label: 'eCommerce',
+        label: 'Client',
         href: '/dashboards/client',
-        icon: 'ri-shopping-bag-3-line'
+        icon: 'ri-file-user-line'
       }
-
-      // {
-      //   label: 'User List',
-      //   href: '/apps/user/list',
-      //   icon: 'ri-file-user-line'
-      // }
     ]
   },
   {
-    sectionLabel: 'Apps',
+    sectionLabel: 'Store & Customer',
     items: [
       {
-        label: 'Calendar',
-        href: '/apps/calendar',
+        label: 'Store',
+        href: '/dashboards/store',
         icon: 'ri-calendar-line'
       },
       {
-        label: 'Invoice List',
-        href: '/apps/invoice/list',
-        icon: 'ri-file-list-3-line'
-      },
-      {
-        label: 'User List',
-        href: '/apps/user/list',
-        icon: 'ri-file-user-line'
-      },
-      {
-        label: 'Roles & Permissions',
-        href: '/apps/roles',
-        icon: 'ri-lock-unlock-line'
-      }
-    ]
-  },
-  {
-    sectionLabel: 'Pages',
-    items: [
-      {
-        label: 'User Profile',
-        href: '/pages/user-profile',
+        label: 'Customer',
+        href: '/dashboards/customer',
         icon: 'ri-user-3-line'
       },
       {
-        label: 'Account Settings',
-        href: '/pages/account-settings',
-        icon: 'ri-settings-4-line'
-      },
-      {
-        label: 'Pricing',
-        href: '/pages/pricing',
-        icon: 'ri-money-dollar-circle-line'
-      },
-      {
-        label: 'FAQ',
-        href: '/pages/faq',
-        icon: 'ri-question-line'
-      }
-    ]
-  },
-  {
-    sectionLabel: 'Forms & Charts',
-    items: [
-      {
-        label: 'Form Layouts',
-        href: '/forms/form-layouts',
-        icon: 'ri-file-text-line'
-      },
-      {
-        label: 'Form Validation',
-        href: '/forms/form-validation',
-        icon: 'ri-checkbox-multiple-line'
-      },
-      {
-        label: 'Form Wizard',
-        href: '/forms/form-wizard',
-        icon: 'ri-equalizer-line'
-      },
-      {
-        label: 'Apex Charts',
-        href: '/charts/apex-charts',
-        icon: 'ri-line-chart-line'
+        label: 'Device',
+        href: '/dashboards/device',
+        icon: 'ri-device-line'
       }
     ]
   }
+  // {
+  //   sectionLabel: 'Pages',
+  //   items: [
+  //     {
+  //       label: 'User Profile',
+  //       href: '/pages/user-profile',
+  //       icon: 'ri-user-3-line'
+  //     },
+  //     {
+  //       label: 'Account Settings',
+  //       href: '/pages/account-settings',
+  //       icon: 'ri-settings-4-line'
+  //     },
+  //     {
+  //       label: 'Pricing',
+  //       href: '/pages/pricing',
+  //       icon: 'ri-money-dollar-circle-line'
+  //     },
+  //     {
+  //       label: 'FAQ',
+  //       href: '/pages/faq',
+  //       icon: 'ri-question-line'
+  //     }
+  //   ]
+  // },
+  // {
+  //   sectionLabel: 'Forms & Charts',
+  //   items: [
+  //     {
+  //       label: 'Form Layouts',
+  //       href: '/forms/form-layouts',
+  //       icon: 'ri-file-text-line'
+  //     },
+  //     {
+  //       label: 'Form Validation',
+  //       href: '/forms/form-validation',
+  //       icon: 'ri-checkbox-multiple-line'
+  //     },
+  //     {
+  //       label: 'Form Wizard',
+  //       href: '/forms/form-wizard',
+  //       icon: 'ri-equalizer-line'
+  //     },
+  //     {
+  //       label: 'Apex Charts',
+  //       href: '/charts/apex-charts',
+  //       icon: 'ri-line-chart-line'
+  //     }
+  //   ]
+  // }
 ]
 
 const DefaultSuggestions = ({ setOpen }: { setOpen: (value: boolean) => void }) => {

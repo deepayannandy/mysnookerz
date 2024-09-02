@@ -11,6 +11,7 @@ import NavToggle from './NavToggle'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
+import NavSearch from '../shared/search'
 
 // Vars
 // const shortcuts: ShortcutsType[] = [
@@ -105,7 +106,7 @@ const NavbarContent = () => {
       <div className='flex items-center gap-[7px]'>
         <NavToggle />
 
-        {/* <NavSearch /> */}
+        <NavSearch />
       </div>
       <div className='flex items-center'>
         <LanguageDropdown />
