@@ -1,6 +1,7 @@
 'use client'
 
-import { Checkbox, FormControlLabel, Grid } from '@mui/material'
+import { ClientPages } from '@/const/admin'
+import { Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Select } from '@mui/material'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -34,6 +35,7 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
   const [isYearly, setIsYearly] = useState(false)
+  const [access, setAccess] = useState([] as string[])
 
   // States
 
@@ -70,6 +72,7 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
 
   const onSubmit = async (data: NewSubscriptionDataType) => {
     data.isYearly = isYearly
+    data.access = access
 
     const billings = []
     if (isSlotBillingSelected) {
@@ -188,7 +191,7 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
               )}
             />
 
-            <Controller
+            {/* <Controller
               name='access'
               control={control}
               rules={{ required: true }}
@@ -201,7 +204,25 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                   {...(errors.access && { error: true, helperText: 'This field is required.' })}
                 />
               )}
-            />
+            /> */}
+
+            <FormControl fullWidth>
+              <InputLabel>Can Access</InputLabel>
+              <Select
+                label='Can Access'
+                multiple
+                value={access}
+                onChange={e =>
+                  setAccess(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)
+                }
+              >
+                {ClientPages.map(page => (
+                  <MenuItem key={page} value={page}>
+                    {page}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Grid item xs={12} sm={6} className='border rounded-md p-2'>
               <InputLabel>Billings</InputLabel>

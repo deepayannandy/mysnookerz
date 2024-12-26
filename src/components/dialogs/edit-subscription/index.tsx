@@ -1,7 +1,8 @@
 'use client'
 
+import { ClientPages } from '@/const/admin'
 import { SubscriptionType } from '@/types/apps/subscriptionTypes'
-import { Checkbox, FormControlLabel, Grid, InputLabel } from '@mui/material'
+import { Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Select } from '@mui/material'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -27,6 +28,8 @@ const EditSubscription = ({ open, setOpen, getSubscriptionData, subscriptionData
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
   const [isYearly, setIsYearly] = useState(false)
+  const [access, setAccess] = useState([] as string[])
+
   // States
 
   // const { lang: locale } = useParams()
@@ -63,6 +66,7 @@ const EditSubscription = ({ open, setOpen, getSubscriptionData, subscriptionData
       setIsCountdownBillingSelected(true)
     }
 
+    setAccess(subscriptionData.access ?? [])
     setIsYearly(!!subscriptionData.isYearly)
   }, [subscriptionData, resetForm])
 
@@ -78,12 +82,14 @@ const EditSubscription = ({ open, setOpen, getSubscriptionData, subscriptionData
       setIsCountdownBillingSelected(true)
     }
 
+    setAccess(subscriptionData.access ?? [])
     setIsYearly(!!subscriptionData.isYearly)
     setOpen(false)
   }
 
   const onSubmit = async (data: Omit<SubscriptionType, '_id'>) => {
     data.isYearly = isYearly
+    data.access = access
 
     const billings = []
     if (isSlotBillingSelected) {
@@ -202,7 +208,7 @@ const EditSubscription = ({ open, setOpen, getSubscriptionData, subscriptionData
               )}
             />
 
-            <Controller
+            {/* <Controller
               name='access'
               control={control}
               rules={{ required: true }}
@@ -215,7 +221,25 @@ const EditSubscription = ({ open, setOpen, getSubscriptionData, subscriptionData
                   {...(errors.access && { error: true, helperText: 'This field is required.' })}
                 />
               )}
-            />
+            /> */}
+
+            <FormControl fullWidth>
+              <InputLabel>Can Access</InputLabel>
+              <Select
+                label='Can Access'
+                multiple
+                value={access}
+                onChange={e =>
+                  setAccess(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)
+                }
+              >
+                {ClientPages.map(page => (
+                  <MenuItem key={page} value={page}>
+                    {page}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Grid item xs={12} sm={6} className='border rounded-md p-2'>
               <InputLabel>Billings</InputLabel>
