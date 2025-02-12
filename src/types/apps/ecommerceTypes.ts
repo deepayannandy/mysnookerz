@@ -65,6 +65,7 @@ export type Device = {
   deviceId: string
   ipAddress: string
   storeId: string
+  storeName: string
   warrantyExpiryDate: string
   warrantyAvailingDate?: string[]
   isActive: boolean

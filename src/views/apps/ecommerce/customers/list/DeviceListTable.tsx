@@ -235,7 +235,11 @@ const DeviceListTable = () => {
       }),
       columnHelper.accessor('onboarding', {
         header: 'Activation Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.onboarding ? DateTime.fromISO(row.original.onboarding).toFormat('dd LLL yyyy') : '-'}
+          </Typography>
+        )
       }),
       columnHelper.accessor('deviceId', {
         header: 'MAC Id',
@@ -250,13 +254,19 @@ const DeviceListTable = () => {
           </Typography>
         )
       }),
-      columnHelper.accessor('storeId', {
-        header: 'Store Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeId}</Typography>
+      columnHelper.accessor('storeName', {
+        header: 'Store Name',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
       }),
       columnHelper.accessor('warrantyExpiryDate', {
         header: 'Warranty Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.warrantyExpiryDate}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.warrantyExpiryDate
+              ? DateTime.fromISO(row.original.warrantyExpiryDate).toFormat('dd LLL yyyy')
+              : '-'}
+          </Typography>
+        )
       }),
       columnHelper.accessor('isActive', {
         header: 'Status',
@@ -418,12 +428,17 @@ const DeviceListTable = () => {
   return (
     <>
       <Card>
-        <CardContent className='flex justify-between flex-col items-start sm:flex-col sm:items-end gap-y-4'>
+        <CardContent className='flex justify-between flex-col items-end sm:flex-col sm:items-end gap-y-4'>
           {/* <DebouncedInput
             value={globalFilter ?? ''}
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Search'
           /> */}
+          <div className='flex gap-x-4'>
+            <Button variant='contained' color='primary' startIcon={<i className='ri-add-line' />}>
+              Add Device
+            </Button>
+          </div>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
