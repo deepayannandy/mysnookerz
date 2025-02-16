@@ -54,9 +54,9 @@ export type Config = {
 }
 
 const themeConfig: Config = {
-  templateName: 'Snooker',
+  templateName: 'Cuekeeper',
   homePageUrl: '/dashboards/dashboard',
-  settingsCookieName: 'my-snooker',
+  settingsCookieName: 'cuekeeper',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
   semiDark: false, // true, false
