@@ -3,6 +3,7 @@ export type SubscriptionType = {
   subscriptionName: string
   subscriptionDescription: string
   subscriptionPrice: number | string
+  subscriptionGlobalPrice: number | string
   subscriptionValidity: number | string
   access: string[]
   billings: string[]

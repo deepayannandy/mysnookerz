@@ -18,6 +18,7 @@ type NewSubscriptionDataType = {
   subscriptionName: string
   subscriptionDescription: string
   subscriptionPrice: number | string
+  subscriptionGlobalPrice: number | string
   subscriptionValidity: number | string
   access: string[]
   billings: string[]
@@ -54,6 +55,7 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
       subscriptionName: '',
       subscriptionDescription: '',
       subscriptionPrice: '',
+      subscriptionGlobalPrice: '',
       subscriptionValidity: '',
       access: [],
       billings: [],
@@ -142,7 +144,6 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 />
               )}
             />
-
             <Controller
               name='subscriptionDescription'
               control={control}
@@ -160,7 +161,6 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 />
               )}
             />
-
             <Controller
               name='subscriptionPrice'
               control={control}
@@ -172,6 +172,20 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                   value={value || ''}
                   onChange={onChange}
                   {...(errors.subscriptionPrice && { error: true, helperText: 'This field is required.' })}
+                />
+              )}
+            />
+            <Controller
+              name='subscriptionGlobalPrice'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Global Price'
+                  value={value || ''}
+                  onChange={onChange}
+                  {...(errors.subscriptionGlobalPrice && { error: true, helperText: 'This field is required.' })}
                 />
               )}
             />
@@ -190,7 +204,6 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 />
               )}
             />
-
             {/* <Controller
               name='access'
               control={control}
@@ -205,7 +218,6 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 />
               )}
             /> */}
-
             <FormControl fullWidth>
               <InputLabel>Can Access</InputLabel>
               <Select
@@ -223,7 +235,6 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 ))}
               </Select>
             </FormControl>
-
             <Grid item xs={12} sm={6} className='border rounded-md p-2'>
               <InputLabel>Billings</InputLabel>
               <FormControlLabel
@@ -254,14 +265,12 @@ const NewSubscription = ({ open, setOpen, getSubscriptionData }: NewSubscription
                 label='Countdown Billing'
               />
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <FormControlLabel
                 control={<Checkbox checked={isYearly} onChange={event => setIsYearly(event.target.checked)} />}
                 label='Is Yearly'
               />
             </Grid>
-
             <div className='flex items-center gap-4'>
               <Button variant='contained' type='submit'>
                 Submit
