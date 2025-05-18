@@ -42,6 +42,7 @@ import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import NewStoreInfo from '@/components/dialogs/new-store-registration'
+import UpgradePlan from '@/components/dialogs/upgrade-plan'
 import SearchInput from '@/components/Search'
 import tableStyles from '@core/styles/table.module.css'
 import { DateTime } from 'luxon'
@@ -138,6 +139,7 @@ const StoreListTable = () => {
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [upgradePlanDialogOpen, setUpgradePlanDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -188,6 +190,11 @@ const StoreListTable = () => {
   const openDeleteConfirmation = (store: StoreType) => {
     setStoreData(store)
     setDeleteConfirmationDialogOpen(true)
+  }
+
+  const openUpgradePlan = (store: StoreType) => {
+    setStoreData(store)
+    setUpgradePlanDialogOpen(true)
   }
 
   const columns = useMemo<ColumnDef<StoreTypeWithAction, any>[]>(
@@ -269,9 +276,15 @@ const StoreListTable = () => {
                     className: 'gap-2',
                     onClick: () => openDeleteConfirmation(row.original)
                   }
+                },
+                {
+                  text: 'Renew Subscription',
+                  icon: 'ri-stack-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openUpgradePlan(row.original)
+                  }
                 }
-
-                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
             />
           </div>
@@ -443,6 +456,13 @@ const StoreListTable = () => {
         name={`store (${storeData.storeName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteStore}
+      />
+      <UpgradePlan
+        open={upgradePlanDialogOpen}
+        setOpen={setUpgradePlanDialogOpen}
+        getStoreData={getStoreData}
+        storeData={storeData}
+        renewPlan={false}
       />
       {/* <AddCustomerDrawer
         open={customerUserOpen}
