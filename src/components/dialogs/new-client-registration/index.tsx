@@ -97,9 +97,7 @@ const NewClientRegistration = ({ open, setOpen, getClientData }: NewClientRegist
 
       if (response && response.data) {
         getClientData()
-        resetForm()
-        setStoreId('')
-        setOpen(false)
+        handleClose()
         toast.success('Client added successfully')
       }
     } catch (error: any) {

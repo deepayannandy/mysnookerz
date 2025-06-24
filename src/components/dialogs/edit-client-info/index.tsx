@@ -4,6 +4,7 @@
 
 // MUI Imports
 import { yupResolver } from '@hookform/resolvers/yup'
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -12,7 +13,7 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import axios from 'axios'
 import _ from 'lodash'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
@@ -25,6 +26,7 @@ type EditClientDataType = {
   profileImage?: string
   password?: string | null
   confirmPassword?: string
+  storeId?: string
 }
 
 type EditClientInfoProps = {
@@ -34,7 +36,7 @@ type EditClientInfoProps = {
   getClientData: () => void
 }
 
-const schema: yup.ObjectSchema<Omit<EditClientDataType, '_id'>> = yup.object().shape({
+const schema: yup.ObjectSchema<Omit<EditClientDataType, '_id' | 'storeId'>> = yup.object().shape({
   fullName: yup.string().required('This field is required').min(1),
   mobile: yup.string().required('This field is required').min(10).max(10),
   email: yup.string().required('This field is required').email('Please enter a valid email address'),
@@ -55,6 +57,8 @@ const schema: yup.ObjectSchema<Omit<EditClientDataType, '_id'>> = yup.object().s
 })
 
 const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClientInfoProps) => {
+  const [stores, setStores] = useState([] as { id: string; storeName: string }[])
+  const [secondaryStoreId, setSecondaryStoreId] = useState('')
   // States
 
   // const { lang: locale } = useParams()
@@ -84,11 +88,11 @@ const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClient
 
   const handleClose = () => {
     resetForm()
+    setSecondaryStoreId('')
     setOpen(false)
   }
 
   const onSubmit = async (data: Omit<EditClientDataType, '_id'>) => {
-    // const storeId = localStorage.getItem('storeId')
     const profileImage = '-'
     const userDesignation = 'Admin'
     const requestData = _.omit(data, 'confirmPassword')
@@ -97,14 +101,13 @@ const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClient
     try {
       const response = await axios.patch(
         `${apiBaseUrl}/user/${clientData._id}`,
-        { ...requestData, userDesignation, profileImage },
+        { ...requestData, userDesignation, profileImage, secondaryStoreId },
         { headers: { 'auth-token': token } }
       )
 
       if (response && response.data) {
         getClientData()
-        resetForm()
-        setOpen(false)
+        handleClose()
         toast.success('Client info updated successfully')
       }
     } catch (error: any) {
@@ -116,6 +119,40 @@ const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClient
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
+
+  const getAllStore = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        const stores: { id: string; storeName: string }[] = response.data
+          .map((data: any) => {
+            if (data._id !== clientData.storeId) {
+              return {
+                id: data._id,
+                storeName: data.storeName
+              }
+            }
+          })
+          .filter((value: { id: string; storeName: string }) => value)
+
+        setStores(stores)
+        setSecondaryStoreId('')
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  useEffect(() => {
+    getAllStore()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   return (
     <Drawer
@@ -136,6 +173,21 @@ const EditClientInfo = ({ open, setOpen, getClientData, clientData }: EditClient
       <div className='p-5'>
         <form onSubmit={handleSubmit(data => onSubmit(data))}>
           <div className='flex flex-col gap-5'>
+            <FormControl fullWidth>
+              <InputLabel>Secondary Store Name</InputLabel>
+              <Select
+                label='Secondary Store Name'
+                value={secondaryStoreId}
+                onChange={e => setSecondaryStoreId(e.target.value)}
+              >
+                {stores.map(store => (
+                  <MenuItem key={store.storeName} value={store.id}>
+                    {store.storeName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Controller
               name='fullName'
               control={control}
